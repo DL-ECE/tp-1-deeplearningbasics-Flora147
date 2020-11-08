@@ -213,12 +213,11 @@ class FFNN:
     def forward_pass(self, input_data: np.array)-> np.array:
         # TODO: perform the whole forward pass using the on_step_forward function
         self.layers[0].Z = input_data
-        
         for i in range(1,self.nlayers) :
             signal = self.layers[i-1].Z
-            self.one_step_forward(signal, self.layers[i]) #pas besoin de retourner qqch  
+            self.one_step_forward(signal, self.layers[i]) 
 
-        return self.layers[-1].Z #retourne y = sortie du reseau
+        return self.layers[-1].Z
     
     def one_step_backward(self, prev_layer: Layer, cur_layer: Layer)-> Layer:
         # TODO: Compute the D matrix of the current layer using the previous layer and return the current layer
@@ -230,16 +229,14 @@ class FFNN:
         self.layers[-1].D = D_out.T
         # TODO: Compute the D matrix for all the layers (excluding the first one which corresponds to the input itself)
         # (you should only use self.layers[1:])
-        for i in range(len(self.layers)-1,1,-1) :
-            self.one_step_backward(self.layers[i],self.layers[i-1])
+        for i in range(len(self.layers[1:])-1,0,-1) :
+            self.one_step_backward(self.layers[i+1],self.layers[i])
 
     
     def update_weights(self, cur_layer: Layer, next_layer: Layer)-> Layer:
         # TODO: Update the W matrix of the next_layer using the current_layer and the learning rate
         # and return the next_layer
-        arg1 = self.learning_rate
-        arg2 = (np.dot(next_layer.D,cur_layer.Z)).T
-        next_layer.W = -np.dot(arg1,arg2)
+        next_layer.W = next_layer.W -self.learning_rate * (np.dot(next_layer.D,cur_layer.Z)).T
         return next_layer
     
     def update_all_weights(self)-> None:
@@ -256,7 +253,6 @@ class FFNN:
                 good_pred += 1
 
         accuracy = good_pred / y_pred.shape[0]
-
         return accuracy
     
     def get_test_error(self, X: np.array, y: np.array)-> float:
@@ -338,7 +334,7 @@ X_demo = X_test[:nsample,:]
 y_demo = ffnn.forward_pass(X_demo)
 y_true = y_test[:nsample,:]
 
-index_to_plot = 23 
+index_to_plot = 50
 plot_one_image(X_demo, y_true, index_to_plot)
 
 # Compare to the prediction 
@@ -346,19 +342,15 @@ prediction = np.argmax(y_demo[index_to_plot,:])
 true_target = np.argmax(y_true[index_to_plot,:])
 
 # is it the same number ? 
-print(prediction,"",true_target)
+print("prediction:",prediction,", true_target:",true_target)
 
 # loop arround the demo test set and try to find a miss prediction
 miss_prediction = 0
-for i in range(0, nsample):   
+for i in range(0, nsample):
     prediction = np.argmax(y_demo[i,:]) # Todo
     true_target = np.argmax(y_true[i,:]) # Todo
-    print(prediction, ",", true_target)
     if prediction != true_target:
-        miss_prediction +=1
-
-plot_one_image(X_demo, y_true, 7)
-print("Error=",miss_prediction/nsample)
+        print("Miss prediction sample",i,": pred=",prediction,", true=",true_target)
 
 """## Open analysis
 
@@ -376,3 +368,10 @@ Also explain how the neural network behave when changing them ?
 TODO
 """
 
+# J'ai augmenté le nombre de couches intermédiaires dans config, qui me paraissait un peu faible
+# De même pour learning_rate, j'ai testé des valeurs entre [0.01,0.1]
+# Je n'ai pas modifié le paramètre nepoch qui me parassait correcte
+# La valeur de minibatch_size a été trouvée en faisant des tests, en respectant les assert
+# Après plusieurs combinaisons, j'ai gardé celle qui me donnait la meilleure accuracy
+
+# Un changement sur ces paramètres a en partie de l'influence sur le calcul des poids W et donc dans le calul de la sortie Y (prédiction)
