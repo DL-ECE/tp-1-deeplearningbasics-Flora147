@@ -351,6 +351,8 @@ for i in range(0, nsample):
     true_target = np.argmax(y_true[i,:]) # Todo
     if prediction != true_target:
         print("Miss prediction sample",i,": pred=",prediction,", true=",true_target)
+    
+pass
 
 """## Open analysis
 
@@ -368,10 +370,11 @@ Also explain how the neural network behave when changing them ?
 TODO
 """
 
-# J'ai augmenté le nombre de couches intermédiaires dans config, qui me paraissait un peu faible
-# De même pour learning_rate, j'ai testé des valeurs entre [0.01,0.1]
-# Je n'ai pas modifié le paramètre nepoch qui me parassait correcte
-# La valeur de minibatch_size a été trouvée en faisant des tests, en respectant les assert
-# Après plusieurs combinaisons, j'ai gardé celle qui me donnait la meilleure accuracy
-
-# Un changement sur ces paramètres a en partie de l'influence sur le calcul des poids W et donc dans le calul de la sortie Y (prédiction)
+# J'ai augmenté le nombre de couches intermédiaires dans config, qui me paraissait un peu faible.
+# En augmentant ce nombre, on améliore l'apprentissage et donc la prédiction.
+# De même pour learning_rate qui me paraissait faible, j'ai testé des valeurs entre ]0.01,0.1].
+# Un changement sur ce paramètre a de l'influence sur le calcul des poids W et donc dans le calul de la sortie Y (prédiction).
+# Je n'ai pas modifié le paramètre nepoch qui me parassait correcte, une valeur inférieure ou supérieure à ce nombre 
+# ne me permettait pas d'atteindre un test accuracy >92%.
+# La valeur de minibatch_size a été trouvée en faisant des tests, en respectant les assert.
+# Après plusieurs combinaisons, j'ai gardé celle qui me donnait la meilleure accuracy.
