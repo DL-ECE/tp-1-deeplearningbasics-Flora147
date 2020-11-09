@@ -309,7 +309,7 @@ minibatch_size = 7
 nepoch = 10
 learning_rate = 0.05
 
-ffnn = FFNN(config=[784, 12, 12, 10], minibatch_size=minibatch_size, learning_rate=learning_rate)
+ffnn = FFNN(config=[784, 15, 15, 10], minibatch_size=minibatch_size, learning_rate=learning_rate)
 
 X_train, X_test, y_train, y_test = train_test_split(mnist_data, mnist_target, test_size=0.33, random_state=1342) 
 X_train = normalize_data(X_train) 
